@@ -6943,6 +6943,7 @@ PreProcessContents(CBContents)
 	
 ; Remove the line that indicates an item cannot be used due to missing character stats	
 	; Matches "Rarity: ..." + anything until "--------"\r\n
+	CBContents:= SubStr(CBContents, InStr(CBContents,"`n") + 1)
 	If (RegExMatch(CBContents, "s)^(.+?:.+?\r\n)(.+?-{8}\r\n)(.*)", match)) {
 		; Matches any ".", looking for the 2 sentences saying "You cannot use this item. Its stats will be ignored."
 		; Could be improved, should suffice though because the alternative would be the item name/type, which can't have any dots.
