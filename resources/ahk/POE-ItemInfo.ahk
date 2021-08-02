@@ -6943,6 +6943,7 @@ PreProcessContents(CBContents)
 	
 ; Remove the line that indicates an item cannot be used due to missing character stats	
 	; Matches "Rarity: ..." + anything until "--------"\r\n
+	CBContents:= SubStr(CBContents, InStr(CBContents,"`n") + 1)
 	If (RegExMatch(CBContents, "s)^(.+?:.+?\r\n)(.+?-{8}\r\n)(.*)", match)) {
 		; Matches any ".", looking for the 2 sentences saying "You cannot use this item. Its stats will be ignored."
 		; Could be improved, should suffice though because the alternative would be the item name/type, which can't have any dots.
@@ -7365,12 +7366,7 @@ ParseItemName(ItemDataChunk, ByRef ItemName, ByRef ItemBaseName, AffixCount = ""
 	
 	Loop, Parse, ItemDataChunk, `n, `r
 	{
-		If (StrLen(A_LoopField) == 0 or A_LoopField == "--------" or A_Index > 4)
-		{
-			return
-		}
-		
-		If (A_Index = 2)
+		If (A_Index == 1)
 		{
 			IfNotInString, A_LoopField, Rarity:
 			{
@@ -7381,7 +7377,13 @@ ParseItemName(ItemDataChunk, ByRef ItemName, ByRef ItemBaseName, AffixCount = ""
 				Continue
 			}
 		}
-		If (A_Index = 3)
+		
+		If (StrLen(A_LoopField) == 0 or A_LoopField == "--------" or A_Index > 3)
+		{
+			return
+		}
+		
+		If (A_Index = 2)
 		{
 			If InStr(A_LoopField, ">>")
 			{
@@ -7432,7 +7434,7 @@ ParseItemName(ItemDataChunk, ByRef ItemName, ByRef ItemBaseName, AffixCount = ""
 				}
 			}
 		}
-		If (A_Index = 4)
+		If (A_Index = 3)
 		{
 			ItemBaseName := A_LoopField
 		}
